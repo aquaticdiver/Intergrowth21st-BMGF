@@ -61,7 +61,6 @@ def find_distance(y, resolution=1.0):
     unique_heights = np.unique(y)
     mid_tup = zip(*[iter(unique_heights)]*3)
     pixel_mid_height = [x[1] for x in mid_tup] 
-
     distances = [abs(y-x)/resolution for x, y in zip(pixel_mid_height, pixel_mid_height[1:])]
     
     return max(set(distances), key=distances.count)
