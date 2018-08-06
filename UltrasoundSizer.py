@@ -46,7 +46,6 @@ def find_heights(cropimg, pixels):
     '''
     width, height = cropimg.size
     found_pixels_coords = [divmod(index, width) for index in pixels]
-    
     y, x = zip(*found_pixels_coords)
     
     return x, y
