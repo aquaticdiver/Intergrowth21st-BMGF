@@ -12,4 +12,5 @@ UltrasoundSizer
 Takes a directory as an input and calculates the pixel distance between the ruler markings and creates a csv with path and metric. The true distances between each tick mark is 1 centimeter. This is the resolution in def find_distance(y, resolution = 1.0).
 
 DicomReader
+
 Takes a directory as an input and produces a manifest of annotations, paths, and a new filename to be uploaded to synapse via fileview csv upload.
