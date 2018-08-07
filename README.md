@@ -1,3 +1,5 @@
+ReadME is a work in progress 08/07/18
+
 UltrasoundClassifier
 
 Model Weights can be found under the weights section, with the code located in UltrasoundClassifier.ipynb 
