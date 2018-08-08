@@ -100,7 +100,7 @@ def find_distances(box, lst, resolution=1.0):
     return np.mean(distances)
 
 def main(outfile):
-    lst = [0,1,2,4]
+    lst = [0,1,2,3,4]
     with open(outfile, 'w') as fp:
         writer = csv.writer(fp)
         for p in find_images(PATH):
