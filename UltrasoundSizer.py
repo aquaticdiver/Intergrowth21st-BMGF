@@ -23,7 +23,7 @@ PATH = "path/to/file"
 OUTFILE = "measures.csv"
 
 '''
-Takes a directory and finds all .bmp files, and grabs the filepath"
+Takes a directory and finds all .bmp files, and grabs the filepath
 '''
 
 def find_images(root, suffix='bmp'):
