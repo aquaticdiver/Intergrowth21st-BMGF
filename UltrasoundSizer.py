@@ -15,81 +15,62 @@
 # limitations under the License.
 
 import os
-import csv
 from PIL import Image
 import numpy as np
+import csv
+import pandas as pd
 
 PATH = "path/to/file/"
 OUTFILE = "measures.csv"
 
 def find_images(root, suffix='bmp'):
-    '''
-    Search the folder named root for images of the type given in suffix.
-    Returns a list of file paths. 
-    '''
     images = []
     for path, dirs, files in os.walk(root):
         for file in files:
             if file.lower().endswith("bmp"):
                 images.append("{0}\{1}".format(path, file))
-                
     return images
-    
+
+def imcrop(img, bbox):
+    x1,y1,x2,y2 = bbox
+    if x1 < 0 or y1 < 0 or x2 > img.shape[1] or y2 > img.shape[0]:
+        img, x1, x2, y1, y2 = pad_img_to_fit_bbox(img, x1, x2, y1, y2)
+    return img[y1:y2, x1:x2, :]
 
 def preprocess(path):
-    '''
-    Reads the image from the given path and applies preprocessing tasks on it.
-    
-    Returns the processed image and the collection of pixels that are of 
-    interest.
-    '''
-    img = Image.open(path)
-    box = (100,100,200,400)
-    cropimg = img.crop(box)
-    
-    found_pixels = []
-    for i, pixel in enumerate(cropimg.getdata()):
-        if pixel == (119, 119, 119):
-            found_pixels.append(i)
-    
-    return cropimg, found_pixels
-
-def find_heights(cropimg, pixels):
-    '''
-    Fine the heights of each line in the ruler.
-    
-    Takes the processed image and the pixels of interest as parameters.
-    '''
-    width, height = cropimg.size
-    found_pixels_coords = [divmod(index, width) for index in pixels]
-    y, x = zip(*found_pixels_coords)
-    
-    return x, y
+    img = cv2.imread(path)
+    bbox = (100, 100, 200, 400)
+    cropped_image = imcrop(img, bbox)
+    return cropped_image
 
 
-def find_distance(y, resolution=1.0):
-    '''
-    Find the distance between two lines in the rule. 
-    
-    The lines may only be approximately equally spaced. There for the
-    modal distance is returned.
-    '''
-    unique_heights = np.unique(y)
-    mid_tup = zip(*[iter(unique_heights)]*3)
-    pixel_mid_height = [x[1] for x in mid_tup] 
-    distances = [abs(y-x)/resolution for x, y in zip(pixel_mid_height, pixel_mid_height[1:])]
-    
-    return max(set(distances), key=distances.count)
+def find_contours(cropped_image):
+    lower = np.array([100,100, 100])
+    upper = np.array([130,130,130])
+    shapeMask = cv2.inRange(cropped_image, lower, upper) 
+    cnt, contours, hierarchy = cv2.findContours(shapeMask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    lst = [0,1,2,3,4]
+    result = [cv2.minAreaRect(contours[x]) for x in lst]
+    box = [cv2.boxPoints(y) for y in result]
+    box = np.array(box)
+    return box
 
+def column(matrix, i)
+    return [row[:,i] for row in matrix]
 
+def find_distances(box, lst, resolution=1.0):
+    lst = [0,1,2,3,4]
+    heights = column(box, 1)
+    avg = [np.mean(heights[i]) for i in lst]
+    distances = [abs(y-x)/resolution for x, y in zip(avg, avg[1:])]
+    return np.mean(distances)
 
 def main(outfile):
-    with open(outfile,'w') as fp:
+    lst = [0,1,2,4]
+    with open(outfile, 'w') as fp:
         writer = csv.writer(fp)
         for p in find_images(PATH):
-            cropimg, found_pixels = preprocess(p)
-            x, y = find_heights(cropimg, found_pixels)
-            dist = find_distance(y)
-            writer.writerow([p, dist])
-
-main(OUTFILE)
+            cropped_image = preprocess(p)
+            box_array = find_contours(cropped_image)
+            distance = find_distances(box_array, lst)
+            writer.writerow([p, distance])
