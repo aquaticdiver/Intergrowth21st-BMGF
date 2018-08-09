@@ -7,7 +7,7 @@ The classifier takes in a dataset, and a csv with ground truth values of labels 
 
 UltrasoundSizer
 
-Takes a directory as an input and calculates the pixel distance between the ruler markings and creates a csv with path and metric. The true distances between each tick mark is 1 centimeter. This is the resolution in def find_distance(y, resolution = 1.0).
+Takes a directory as an input and calculates the pixel distance between the ruler markings and creates a csv with path and metric. The true distances between each tick mark is 1 centimeter. This is the resolution in def find_distance(y, resolution = 1.0), the list of numerical values is the number of sample objects for detection, this can be increased or decreased as necessary.
 
 DicomReader
 
