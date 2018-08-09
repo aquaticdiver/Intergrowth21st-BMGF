@@ -14,4 +14,5 @@ DicomReader
 Takes a directory as an input and produces a manifest of annotations, paths, and a new filename to be uploaded to synapse via fileview csv upload.
 
 OCR-DataCleaning
+
 Use the google API documentation to obtain a working redis-server to index all the files in the OCR, then call on the textindex.py to obtain a set of paths and detected text. This script will take in this set and attempt to filter out important measurements.
