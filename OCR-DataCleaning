@@ -1,0 +1,20 @@
+import textindex
+import pandas as pandas
+import csv
+import re
+
+index = textindex.Index()
+lookup = index.lookup('philips')
+lookup = list(lookup)
+df = pd.DataFrame(lookup)
+
+def rowcleaner(row):
+    patt = re.compile('\d\d.\d\d?\s?cm')
+    info = row[1] #column with information
+    measurement = re.findall(patt,str(info))
+    if measurement:
+        return max(set(measurement), key=measurement.count)
+    else:
+        return None
+
+df['Measurement'] = df.apply(rowcleaner, axis=1)
